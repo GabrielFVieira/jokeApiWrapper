@@ -11,7 +11,8 @@ import com.gabrielfigueiredo.jokeApiWrapper.model.JokeRating;
 
 public interface JokeRatingRepository extends JpaRepository<JokeRating, Integer> {
 
-	@Query(value= "SELECT j FROM JokeRating j WHERE j.category = :category GROUP BY j.jokeId ORDER BY j.rating DESC")
+	@Query(value= "SELECT j FROM JokeRating j WHERE j.id IN "
+			+ "(SELECT jr.id FROM JokeRating jr WHERE jr.category = :category GROUP BY jr.jokeId, jr.id ORDER BY jr.rating DESC)")
 	public List<JokeRating> listTopRankings(@Param("category") String category, Pageable pageable);
 	
 	@Query(value= "SELECT j FROM JokeRating j GROUP BY j.jokeId ORDER BY j.rating DESC")

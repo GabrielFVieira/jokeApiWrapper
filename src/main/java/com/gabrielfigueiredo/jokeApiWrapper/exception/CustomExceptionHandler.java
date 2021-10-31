@@ -20,6 +20,12 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
 	}
 	
+	@ExceptionHandler(OutOfJokesException.class)
+	public ResponseEntity<JsonResponse> handleServerException(OutOfJokesException exception) {
+		JsonResponse error = new JsonResponse(exception.getMessage());
+		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+	}
+	
 	@ExceptionHandler(ServerException.class)
 	public ResponseEntity<JsonResponse> handleServerException(ServerException exception) {
 		JsonResponse error = new JsonResponse(exception.getMessage());

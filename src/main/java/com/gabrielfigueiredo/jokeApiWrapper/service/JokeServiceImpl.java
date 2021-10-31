@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.gabrielfigueiredo.jokeApiWrapper.exception.JokeNotFoundException;
+import com.gabrielfigueiredo.jokeApiWrapper.exception.OutOfJokesException;
 import com.gabrielfigueiredo.jokeApiWrapper.exception.ServerException;
 import com.gabrielfigueiredo.jokeApiWrapper.model.Joke;
 import com.gabrielfigueiredo.jokeApiWrapper.model.JokeRating;
 import com.gabrielfigueiredo.jokeApiWrapper.model.enums.JokeType;
 
-import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class JokeServiceImpl implements JokeService {
 	private final WebClient jokeApiClient;
 	private final JokeRatingService ratingService;
+	private final JokeHistoryService historyService;
 	
 	private static final String ANY_CATEGORY = "Any";
 	private static final String LANGUAGE = "en";
@@ -67,8 +68,12 @@ public class JokeServiceImpl implements JokeService {
 				throw new JokeNotFoundException(joke.getMessage(), joke.getAdditionalInfo());
 			}
 			
+			if(!historyService.isNewJoke(joke)) {
+				throw new OutOfJokesException();
+			}
+			
 			return joke;
-		} catch (JokeNotFoundException e) {
+		} catch (JokeNotFoundException | OutOfJokesException e) {
 			throw e;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -91,7 +96,7 @@ public class JokeServiceImpl implements JokeService {
 					.block();
 			
 			if(joke.hasError()) {
-				throw new NotFoundException(joke.getMessage());
+				throw new JokeNotFoundException(joke.getMessage());
 			}
 			
 			return joke;
