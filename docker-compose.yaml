@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+  mysqldb:
+    image: mysql:5.7
+    environment:
+      MYSQL_USER: sensedia
+      MYSQL_PASSWORD: sensedia
+      MYSQL_USER_HOST: "%"
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: jokeapi
+    restart: always
+    ports:
+      - "3306:3306"
+  jokeapi:
+    depends_on:
+      - mysqldb
+    build: .
+    environment:
+      MYSQL_HOST: "mysqldb"
+    restart: on-failure
+    ports:
+      - "8088:8085"

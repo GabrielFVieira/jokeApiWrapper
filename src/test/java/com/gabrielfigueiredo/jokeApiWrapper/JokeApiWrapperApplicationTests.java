@@ -9,5 +9,5 @@ class JokeApiWrapperApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
+	
 }
