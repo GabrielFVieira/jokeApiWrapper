@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class SummaryDTO {
 	private Map<String, List<JokeDTO>> topJokes;
-	private List<Integer> unratedSeenJokes;
+	private UnratedJokesDTO unratedSeenJokes;
 	private String lang;
 	
 	public void addTopJoke(String category, List<JokeDTO> jokes) {

@@ -17,9 +17,9 @@ import com.gabrielfigueiredo.jokeApiWrapper.dto.JokeDTO;
 import com.gabrielfigueiredo.jokeApiWrapper.dto.JokeRatingDTO;
 import com.gabrielfigueiredo.jokeApiWrapper.model.Joke;
 import com.gabrielfigueiredo.jokeApiWrapper.model.JokeRating;
+import com.gabrielfigueiredo.jokeApiWrapper.service.JokeApiService;
 import com.gabrielfigueiredo.jokeApiWrapper.service.JokeRatingService;
 import com.gabrielfigueiredo.jokeApiWrapper.service.JokeService;
-import com.gabrielfigueiredo.jokeApiWrapper.util.JokeApiUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,29 +32,29 @@ public class JokeController {
 	
 	@GetMapping()
 	public JokeDTO getJoke(@RequestParam Optional<String> type, 
-			 			   @RequestParam(defaultValue = JokeApiUtils.DEFAULT_LANGUAGE) String lang,
-						   @RequestParam(defaultValue = JokeApiUtils.DEFAULT_CATEGORY) String... categories) {
+			 			   @RequestParam(defaultValue = JokeApiService.DEFAULT_LANGUAGE) String lang,
+						   @RequestParam(defaultValue = JokeApiService.DEFAULT_CATEGORY) String... categories) {
 		
 		Joke joke = jokeService.getJoke(type, lang, categories);
 		return new JokeDTO(joke);
 	}
 	
 	@GetMapping("/{id}")
-	public JokeDTO getJokeById(@PathVariable Integer id, @RequestParam(defaultValue = JokeApiUtils.DEFAULT_LANGUAGE) String lang) {
+	public JokeDTO getJokeById(@PathVariable Integer id, @RequestParam(defaultValue = JokeApiService.DEFAULT_LANGUAGE) String lang) {
 		Joke joke = jokeService.find(id, lang);
 		return new JokeDTO(joke);
 	}
 	
 	@PostMapping("/{id}/rate")
 	public void rateJoke(@PathVariable Integer id, @RequestBody JokeRatingDTO rating) {
-		String language = Strings.isEmpty(rating.getLang()) ? JokeApiUtils.DEFAULT_LANGUAGE : rating.getLang();
+		String language = Strings.isEmpty(rating.getLang()) ? JokeApiService.DEFAULT_LANGUAGE : rating.getLang();
 		
 		jokeRatingService.createRating(id, language, rating.getRating(), rating.getCommentary());
 	}
 	
 	@GetMapping("/{id}/rate")
 	public List<JokeRatingDTO> getRatings(@PathVariable Integer id,
-										  @RequestParam(defaultValue = JokeApiUtils.DEFAULT_LANGUAGE) String lang) {
+										  @RequestParam(defaultValue = JokeApiService.DEFAULT_LANGUAGE) String lang) {
 		
 		List<JokeRating> ratings = jokeRatingService.list(id, lang);
 		
@@ -67,8 +67,8 @@ public class JokeController {
 	
 	@GetMapping("/{category}/top")
 	public List<JokeDTO> getTopJokes(@PathVariable String category, 
-									 @RequestParam(defaultValue = JokeApiUtils.DEFAULT_LANGUAGE) String lang, 
-									 @RequestParam(defaultValue = JokeApiUtils.DEFAULT_TOP_AMOUNT) Integer amount) {
+									 @RequestParam(defaultValue = JokeApiService.DEFAULT_LANGUAGE) String lang, 
+									 @RequestParam(defaultValue = JokeApiService.DEFAULT_TOP_AMOUNT) Integer amount) {
 		
 		List<Joke> jokes = jokeService.getTopJokes(category, lang, amount);
 		

@@ -10,15 +10,15 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class JokeRatingDTO {
-	private Integer id;
+	private Integer jokeId;
 	private String lang;
 	private Integer rating;
 	private String commentary;
 	private Date date;
 	
 	public JokeRatingDTO(JokeRating entity) {
-		this.id = entity.getId();
-		this.lang = entity.getLanguage();
+		this.jokeId = entity.getJoke().getId();
+		this.lang = entity.getJoke().getLang();
 		this.rating = entity.getRating();
 		this.commentary = entity.getCommentary();
 		this.date = entity.getDate();

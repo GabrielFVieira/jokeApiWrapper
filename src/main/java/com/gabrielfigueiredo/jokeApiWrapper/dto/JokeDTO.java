@@ -10,7 +10,7 @@ public class JokeDTO {
 	private String joke;
 	
 	public JokeDTO(Joke entity) {
-		this.id = entity.getId();
-		this.joke = entity.getCompleteJoke();
+		this.id = entity.getJokeApiId();
+		this.joke = entity.getJoke();
 	}
 }

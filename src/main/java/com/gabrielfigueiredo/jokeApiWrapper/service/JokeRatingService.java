@@ -12,6 +12,4 @@ public interface JokeRatingService {
 	public void createRating(Integer jokeId, String language, Integer rating, String comment) throws JokeNotFoundException;
 	
 	public List<JokeRating> list(Integer jokeId, String language) throws JokeNotFoundException;
-	
-	public List<JokeRating> listByRatingPerCategory(String category, String language, Integer amount);
 }

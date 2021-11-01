@@ -3,6 +3,9 @@ package com.gabrielfigueiredo.jokeApiWrapper.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.gabrielfigueiredo.jokeApiWrapper.exception.JokeNotFoundException;
 import com.gabrielfigueiredo.jokeApiWrapper.exception.OutOfJokesException;
 import com.gabrielfigueiredo.jokeApiWrapper.exception.ServerException;
@@ -15,7 +18,7 @@ public interface JokeService {
 	
 	public List<Joke> getTopJokes(String category, String language, Integer amount) throws ServerException;
 	
-	public Joke find(Integer id, String language) throws JokeNotFoundException, ServerException;
+	public Page<Joke> getUnratedJokes(String language, Pageable page) throws ServerException;
 	
-	public Boolean testConnection();
+	public Joke find(Integer jokeApiId, String language) throws JokeNotFoundException, ServerException;
 }

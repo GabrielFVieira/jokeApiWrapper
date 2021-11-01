@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.lang.NonNull;
@@ -14,21 +15,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @Entity
+@NoArgsConstructor
 public class JokeRating {
 	@Id
 	@GeneratedValue
 	private Integer id;
 	
-	@NonNull
-	private Integer jokeId;
-	
-	@NonNull
-	private String language;
-	
-	@NonNull
-	private String category;
+	@ManyToOne
+	private Joke joke;
 	
 	@NonNull
 	private Integer rating;
@@ -39,10 +34,8 @@ public class JokeRating {
 	@CreationTimestamp
 	private Date date;
 	
-	public JokeRating(Integer jokeId, String language, String category, Integer rating, String commentary) {
-		this.jokeId = jokeId;
-		this.language = language;
-		this.category = category;
+	public JokeRating(Joke joke, Integer rating, String commentary) {
+		this.joke = joke;
 		this.rating = rating;
 		this.commentary = commentary;
 	}

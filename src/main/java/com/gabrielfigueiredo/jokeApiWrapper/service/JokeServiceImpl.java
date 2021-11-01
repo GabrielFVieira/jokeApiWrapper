@@ -1,76 +1,43 @@
 package com.gabrielfigueiredo.jokeApiWrapper.service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import com.gabrielfigueiredo.jokeApiWrapper.exception.JokeNotFoundException;
 import com.gabrielfigueiredo.jokeApiWrapper.exception.OutOfJokesException;
 import com.gabrielfigueiredo.jokeApiWrapper.exception.ServerException;
 import com.gabrielfigueiredo.jokeApiWrapper.model.Joke;
-import com.gabrielfigueiredo.jokeApiWrapper.model.JokeRating;
-import com.gabrielfigueiredo.jokeApiWrapper.util.JokeApiUtils;
+import com.gabrielfigueiredo.jokeApiWrapper.repository.JokeRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class JokeServiceImpl implements JokeService {
-	private final WebClient jokeApiClient;
-	private final JokeRatingService ratingService;
-	private final JokeHistoryService historyService;
+	private final JokeRepository repository;
+	private final JokeApiService apiService;
 	
-	private static final String JOKE_URI_PATH = "/joke/{category}";
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public Boolean testConnection() { // Method used to test the connection with the JokeAPI
+	public Joke getJoke(Optional<String> type, String language, String... categories) { 
 		try {
-			Map<String, Object> responseBody = this.jokeApiClient
-											.get()
-											.uri("/ping")
-											.retrieve()
-											.bodyToMono(Map.class)
-											.block();
+			JokeResponse response = apiService.getApiJoke(type, language, categories);
 			
-			return (Boolean) responseBody.get("error");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return false;
-	}
-	
-	@Override
-	public Joke getJoke(Optional<String> type, String language, String... categories) { // Method used to get jokes
-		try {
-			Joke joke = this.jokeApiClient
-					.get()
-					.uri(uriBuilder -> uriBuilder
-						.path(JOKE_URI_PATH)
-						.queryParam("safe-mode") // Apply the safe mode filter
-						.queryParam("amount", 1) // Grants that only one joke will be returned
-						.queryParam("lang", language) // Set the language - DEFAULT: English
-						.queryParamIfPresent("type", type) // Add the type filter if present
-						.build(String.join(",", categories))) // Add the category filter - DEFAULT: Any
-					.retrieve()
-					.bodyToMono(Joke.class)
-					.block();
-
-			if(joke.hasError()) {
-				throw new JokeNotFoundException(joke.getMessage(), joke.getAdditionalInfo());
+			Joke joke = new Joke();
+			joke.setJokeApiId(response.getId());
+			joke.setLang(response.getLang());
+			joke.setCategory(response.getCategory());
+			joke.setJoke(response.getCompleteJoke());
+			
+			if(repository.exists(Example.of(joke))) {
+				throw new OutOfJokesException(); // Throw an error if the joke was already seen
 			}
 			
-			if(!historyService.isNewJoke(joke)) {
-				throw new OutOfJokesException();
-			}
-			
-			return joke;
-		} catch (JokeNotFoundException | OutOfJokesException e) {
+			return repository.save(joke);
+		} catch (JokeNotFoundException | OutOfJokesException | ServerException e) {
 			throw e;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -79,52 +46,48 @@ public class JokeServiceImpl implements JokeService {
 	}
 	
 	@Override
-	public Joke find(Integer id, String language) {
+	public Joke find(Integer jokeApiId, String language) {
 		try {
-			Joke joke = this.jokeApiClient
-					.get()
-					.uri(uriBuilder -> uriBuilder
-						.path(JOKE_URI_PATH)
-						.queryParam("idRange", id) // Filter by the specific id
-						.queryParam("lang", language) // Set the language - DEFAULT: English
-						.build(JokeApiUtils.DEFAULT_CATEGORY))
-					.retrieve()
-					.bodyToMono(Joke.class)
-					.block();
+			Joke joke = new Joke();
+			joke.setJokeApiId(jokeApiId);
+			joke.setLang(language);
 			
-			if(joke.hasError()) {
-				throw new JokeNotFoundException(joke.getMessage());
+			Optional<Joke> savedJoke = repository.findOne(Example.of(joke));
+			if(!savedJoke.isPresent()) {
+				throw new JokeNotFoundException("This joke hasn't been seen yet");
 			}
 			
-			return joke;
+			return savedJoke.get();
 		} catch (JokeNotFoundException e) {
 			throw e;
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new ServerException("Error while searching for the joke with id: " + id);
+			throw new ServerException("Error while searching for the joke with id: " + jokeApiId + " and language: " + language);
 		}
 	}
 	
 
 	@Override
 	public List<Joke> getTopJokes(String category, String language) {
-		return getTopJokes(category, language, Integer.valueOf(JokeApiUtils.DEFAULT_TOP_AMOUNT));
+		return getTopJokes(category, language, Integer.valueOf(JokeApiService.DEFAULT_TOP_AMOUNT));
 	}
 	
 	@Override
-	public List<Joke> getTopJokes(String category, String language, Integer amount) throws ServerException {
+	public List<Joke> getTopJokes(String category, String language, Integer amount) {
 		try {
-			List<JokeRating> ratings = ratingService
-					.listByRatingPerCategory(category, language, amount);
-			
-			List<Joke> jokes = ratings.parallelStream()
-									  .map(rating -> find(rating.getJokeId(), language))
-									  .collect(Collectors.toList());
-			
-			return jokes;
+			return repository.listTopJokes(category, language, Pageable.ofSize(amount));
 		} catch (Exception e) {
 			throw new ServerException("Error while searching for the top " + amount + 
 									  " jokes in " + language + " of the category " + category);
+		}
+	}
+
+	@Override
+	public Page<Joke> getUnratedJokes(String language, Pageable pageable) {
+		try {
+			return repository.listUnratedJokes(language, pageable);
+		} catch (Exception e) {
+			throw new ServerException("Error while searching for the unrated jokes of the language: " + language);
 		}
 	}
 }
