@@ -50,6 +50,9 @@ public class SummaryController {
 	public UnratedJokesDTO getUnratedJokes(@RequestParam(defaultValue = JokeApiService.DEFAULT_LANGUAGE) String lang, Pageable pageable) {
 		Page<Joke> jokes = jokeService.getUnratedJokes(lang, pageable);
 		List<JokeDTO> jokesDTO = jokes.stream().map(joke -> new JokeDTO(joke)).collect(Collectors.toList());
-		return new UnratedJokesDTO(jokes.getNumber(), jokes.getTotalPages() - 1, jokes.getSize(), jokesDTO, lang);
+		
+		 // Removing 1 because the pages starts at 0 index
+		Integer totalPages = jokes.getTotalPages() > 0 ? jokes.getTotalPages() - 1 : 0;
+		return new UnratedJokesDTO(jokes.getNumber(), totalPages, jokes.getSize(), jokesDTO, lang);
 	}
 }
