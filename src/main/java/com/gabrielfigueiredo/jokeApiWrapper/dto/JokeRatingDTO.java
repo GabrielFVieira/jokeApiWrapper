@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class JokeRatingDTO { // Class that store the data returned by the endpoints
+public class JokeRatingDTO {
 	private Integer id;
 	private String lang;
 	private Integer rating;

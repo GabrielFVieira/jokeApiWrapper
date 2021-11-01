@@ -36,8 +36,6 @@ public class JokeHistoryServiceImpl implements JokeHistoryService {
 	}
 	
 	public List<Integer> getAllUnratedJokes(String language) {
-		
-		
-		return null;
+		return repository.getAllUnratedJokes(language);
 	}
 }

@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-public class JokeRating { // Class that represent the joke_rating table
+public class JokeRating {
 	@Id
 	@GeneratedValue
 	private Integer id;
