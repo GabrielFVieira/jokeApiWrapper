@@ -12,9 +12,12 @@ import com.gabrielfigueiredo.jokeApiWrapper.model.JokeRating;
 public interface JokeRatingRepository extends JpaRepository<JokeRating, Integer> {
 
 	@Query(value= "SELECT j FROM JokeRating j WHERE j.id IN "
-			+ "(SELECT jr.id FROM JokeRating jr WHERE jr.category = :category GROUP BY jr.jokeId, jr.id ORDER BY jr.rating DESC)")
-	public List<JokeRating> listTopRankings(@Param("category") String category, Pageable pageable);
+			+ "(SELECT jr.id FROM JokeRating jr WHERE jr.category = :category "
+			+ "AND jr.language = :lang GROUP BY jr.jokeId, jr.id ORDER BY jr.rating DESC)")
+	public List<JokeRating> listTopRankings(@Param("category") String category, @Param("lang") String language, Pageable pageable);
 	
-	@Query(value= "SELECT j FROM JokeRating j GROUP BY j.jokeId ORDER BY j.rating DESC")
-	public List<JokeRating> listTopRankings(Pageable pageable);
+	@Query(value= "SELECT j FROM JokeRating j WHERE j.id IN"
+			+ "(SELECT jr.id FROM JokeRating jr WHERE j.language = :lang "
+			+ "GROUP BY jr.jokeId ORDER BY j.rating DESC)")
+	public List<JokeRating> listTopRankings(@Param("lang") String language, Pageable pageable);
 }

@@ -1,7 +1,5 @@
 package com.gabrielfigueiredo.jokeApiWrapper.model;
 
-import com.gabrielfigueiredo.jokeApiWrapper.model.enums.JokeType;
-
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
@@ -10,7 +8,7 @@ import lombok.Getter;
 public class Joke {
 	private Integer id;
 	private String category;
-	private JokeType type;
+	private String type;
 	private String joke;
 	private String setup;
 	private String delivery;
@@ -23,7 +21,7 @@ public class Joke {
 	private String additionalInfo;
 	
 	public String getCompleteJoke() {
-		if(JokeType.TWOPART.equals(type)) {
+		if("twopart".equals(type.toLowerCase())) {
 			return addDash(setup) + "\n " + addDash(delivery);
 		} else {
 			return joke;

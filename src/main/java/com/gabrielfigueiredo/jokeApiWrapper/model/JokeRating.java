@@ -25,6 +25,9 @@ public class JokeRating { // Class that represent the joke_rating table
 	private Integer jokeId;
 	
 	@NonNull
+	private String language;
+	
+	@NonNull
 	private String category;
 	
 	@NonNull
@@ -35,9 +38,6 @@ public class JokeRating { // Class that represent the joke_rating table
 	
 	@CreationTimestamp
 	private Date date;
-	
-	@NonNull
-	private String language;
 	
 	public JokeRating(Integer jokeId, String language, String category, Integer rating, String commentary) {
 		this.jokeId = jokeId;

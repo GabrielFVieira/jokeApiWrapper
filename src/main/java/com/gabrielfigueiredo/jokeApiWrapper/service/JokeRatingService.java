@@ -7,13 +7,11 @@ import com.gabrielfigueiredo.jokeApiWrapper.model.JokeRating;
 
 public interface JokeRatingService {
 	
-	public void createRating(Integer id, Integer rating) throws JokeNotFoundException;
+	public void createRating(Integer jokeId, String language, Integer rating) throws JokeNotFoundException;
 	
-	public void createRating(Integer id, Integer rating, String comment) throws JokeNotFoundException;
+	public void createRating(Integer jokeId, String language, Integer rating, String comment) throws JokeNotFoundException;
 	
-	public List<JokeRating> listAll();
+	public List<JokeRating> list(Integer jokeId, String language) throws JokeNotFoundException;
 	
-	public List<JokeRating> list(Integer id);
-	
-	public List<JokeRating> listByRating(String category, Integer amount);
+	public List<JokeRating> listByRatingPerCategory(String category, String language, Integer amount);
 }
