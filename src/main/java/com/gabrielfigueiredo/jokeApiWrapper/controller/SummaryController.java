@@ -21,6 +21,8 @@ import com.gabrielfigueiredo.jokeApiWrapper.service.CategoryService;
 import com.gabrielfigueiredo.jokeApiWrapper.service.JokeApiService;
 import com.gabrielfigueiredo.jokeApiWrapper.service.JokeService;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -32,8 +34,14 @@ public class SummaryController {
 	private final JokeService jokeService;
 	private final ModelMapper modelMapper;
 	
+	private static final String JOKE_LANGUAGE = "The language of the jokes";
+	
+	@ApiOperation("Get a summary")
 	@GetMapping()
-	public SummaryResponse getSummary(@RequestParam(defaultValue = JokeApiService.DEFAULT_LANGUAGE) String lang, Pageable pageable) {
+	public SummaryResponse getSummary(@ApiParam(value = JOKE_LANGUAGE)
+									  @RequestParam(defaultValue = JokeApiService.DEFAULT_LANGUAGE) String lang, 
+									  Pageable pageable) {
+		
 		List<String> categories = categoryService.list();
 		SummaryResponse sumary = new SummaryResponse();
 		sumary.setLang(lang);
@@ -51,8 +59,12 @@ public class SummaryController {
 		return sumary;
 	}
 	
+	@ApiOperation("Get only the unrated seen jokes")
 	@GetMapping("/unrated")
-	public UnratedJokesResponse getUnratedJokes(@RequestParam(defaultValue = JokeApiService.DEFAULT_LANGUAGE) String lang, Pageable pageable) {
+	public UnratedJokesResponse getUnratedJokes(@ApiParam(value = JOKE_LANGUAGE)
+												@RequestParam(defaultValue = JokeApiService.DEFAULT_LANGUAGE) String lang, 
+												Pageable pageable) {
+		
 		Page<Joke> jokes = jokeService.getUnratedJokes(lang, pageable);
 		List<JokeDTO> jokesDTO = jokes.stream().map(joke -> convertToDto(joke)).collect(Collectors.toList());
 		

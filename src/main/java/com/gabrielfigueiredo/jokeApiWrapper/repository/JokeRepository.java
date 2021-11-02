@@ -12,12 +12,26 @@ import com.gabrielfigueiredo.jokeApiWrapper.model.Joke;
 
 public interface JokeRepository extends JpaRepository<Joke, Integer> {
 
-	@Query(value= "SELECT DISTINCT j FROM Joke j WHERE j IN "
-				+ "(SELECT jr.joke FROM JokeRating jr "
-				+ "WHERE jr.joke.category = :category "
-				+ "AND jr.joke.lang = :lang "
-				+ "ORDER BY jr.rating DESC)")
+	@Query(value= "SELECT j.* FROM joke j "
+			+ "INNER JOIN "
+			+ "(SELECT jr.joke_id as jid, AVG(jr.rating) as ratingAvg "
+			+ "FROM joke_rating jr "
+			+ "GROUP BY jr.joke_id) as ranking "
+			+ "ON ranking.jid = j.id "
+			+ "WHERE j.category = :category "
+			+ "AND j.lang = :lang "
+			+ "ORDER BY ranking.ratingAvg DESC", nativeQuery = true)
 	public List<Joke> listTopJokes(@Param("category") String category, @Param("lang") String language, Pageable pageable);
+	
+	@Query(value= "SELECT j.* FROM joke j "
+				+ "INNER JOIN "
+				+ "(SELECT jr.joke_id as jid, AVG(jr.rating) as ratingAvg "
+				+ "FROM joke_rating jr "
+				+ "GROUP BY jr.joke_id) as ranking "
+				+ "ON ranking.jid = j.id "
+				+ "WHERE j.lang = :lang "
+				+ "ORDER BY ranking.ratingAvg DESC", nativeQuery = true)
+public List<Joke> listTopJokes(@Param("lang") String language, Pageable pageable);
 	
 	@Query(value= "SELECT j FROM Joke j "
 				+ "WHERE j.lang = :lang "

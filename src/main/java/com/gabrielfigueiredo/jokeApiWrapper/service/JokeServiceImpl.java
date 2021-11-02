@@ -3,6 +3,7 @@ package com.gabrielfigueiredo.jokeApiWrapper.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -75,6 +76,10 @@ public class JokeServiceImpl implements JokeService {
 	@Override
 	public List<Joke> getTopJokes(String category, String language, Integer amount) {
 		try {
+			if(Strings.isEmpty(category) || JokeApiService.DEFAULT_CATEGORY.equals(category.toLowerCase())) {
+				return repository.listTopJokes(language, Pageable.ofSize(amount));
+			}
+			
 			return repository.listTopJokes(category, language, Pageable.ofSize(amount));
 		} catch (Exception e) {
 			throw new ServerException("Error while searching for the top " + amount + 

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.gabrielfigueiredo.jokeApiWrapper.service.CategoryService;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class CategoryController {
 	private final CategoryService service;
 	
+	@ApiOperation("Get all the available categories")
 	@GetMapping()
 	public List<String> getCategories() {
 		return service.list();
