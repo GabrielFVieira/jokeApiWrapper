@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.util.Strings;
+import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,20 +30,19 @@ import lombok.RequiredArgsConstructor;
 public class JokeController {
 	private final JokeService jokeService;
 	private final JokeRatingService jokeRatingService;
-	
+	private final ModelMapper modelMapper;
+
 	@GetMapping()
 	public JokeDTO getJoke(@RequestParam Optional<String> type, 
 			 			   @RequestParam(defaultValue = JokeApiService.DEFAULT_LANGUAGE) String lang,
 						   @RequestParam(defaultValue = JokeApiService.DEFAULT_CATEGORY) String... categories) {
 		
-		Joke joke = jokeService.getJoke(type, lang, categories);
-		return new JokeDTO(joke);
+		return convertToDto(jokeService.getJoke(type, lang, categories));
 	}
 	
 	@GetMapping("/{id}")
 	public JokeDTO getJokeById(@PathVariable Integer id, @RequestParam(defaultValue = JokeApiService.DEFAULT_LANGUAGE) String lang) {
-		Joke joke = jokeService.find(id, lang);
-		return new JokeDTO(joke);
+		return convertToDto(jokeService.find(id, lang));
 	}
 	
 	@PostMapping("/{id}/rate")
@@ -59,7 +59,7 @@ public class JokeController {
 		List<JokeRating> ratings = jokeRatingService.list(id, lang);
 		
 		List<JokeRatingDTO> ratingsDTO = ratings.stream()
-												.map(rating -> new JokeRatingDTO(rating))
+												.map(rating -> convertToDto(rating))
 												.collect(Collectors.toList());
 		
 		return ratingsDTO;
@@ -73,9 +73,18 @@ public class JokeController {
 		List<Joke> jokes = jokeService.getTopJokes(category, lang, amount);
 		
 		List<JokeDTO> jokesDTO = jokes.stream()
-									  .map(joke -> new JokeDTO(joke))
+									  .map(joke -> convertToDto(joke))
 									  .collect(Collectors.toList());
 		
 		return jokesDTO;
 	}
+	
+	private JokeDTO convertToDto(Joke joke) {
+		return modelMapper.map(joke, JokeDTO.class);
+	}
+	
+	private JokeRatingDTO convertToDto(JokeRating jokeRating) {
+		return modelMapper.map(jokeRating, JokeRatingDTO.class);
+	}
+	
 }

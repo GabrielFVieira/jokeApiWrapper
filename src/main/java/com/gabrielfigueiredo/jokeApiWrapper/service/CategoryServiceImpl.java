@@ -39,17 +39,19 @@ public class CategoryServiceImpl implements CategoryService {
 			throw new ServerException("Error while fetching the categories");
 		}
 	}
-}
-
-@Data
-class CategoriesResponse {
-	private List<String> categories;
 	
-	@Getter(AccessLevel.NONE)
-	private Boolean error;
-	private String message;
-	
-	public Boolean hasError() {
-		return error;
+	@Data
+	static class CategoriesResponse {
+		private List<String> categories;
+		
+		@Getter(AccessLevel.NONE)
+		private Boolean error;
+		private String message;
+		
+		public Boolean hasError() {
+			return error;
+		}
 	}
 }
+
+
