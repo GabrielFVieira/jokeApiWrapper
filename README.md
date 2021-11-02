@@ -101,7 +101,7 @@ Endpoint used rate a seen joke
   - id -> The desired joke id
 
 #### Json Body:
-  - ratting -> Your rating to the joke
+  - rating -> Your rating to the joke
   - comment -> OPTIONAL. Some commentary about the joke
   - lang -> OPTIONAL. Define the language of the joke that will be returned. The default value is 'en'(english)
 
@@ -126,7 +126,7 @@ The unseen jokes might me paginated, based on the amount of unrated jokes seen.
   - size -> OPTIONAL. Defines the max size of the unrated jokes seen list. Default: 10, Max: 30
 
 ### GET [/summary/unrated](http://localhost:8088/summary/unrated)
-Get only the unrated jokes seen portion of the summatry
+Get only the unrated jokes seen portion of the summary
 
 #### Query Parameters:
   - lang -> OPTIONAL. Define the language of the joke that will be returned. The default value is 'en'(english)
@@ -134,7 +134,7 @@ Get only the unrated jokes seen portion of the summatry
   - size -> OPTIONAL. Defines the max size of the joke list. Default: 10, Max: 30
   
 ### GET [/categories](http://localhost:8088/categories)
-List all the availabel categories
+List all the available categories
 
 #### Return:
   Json object with the following format:
