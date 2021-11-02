@@ -1,8 +1,6 @@
 package com.gabrielfigueiredo.jokeApiWrapper.service;
 
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 public class JokeResponse {
@@ -14,8 +12,6 @@ public class JokeResponse {
 	private String delivery;
 	private Boolean safe;
 	private String lang;
-	
-	@Getter(AccessLevel.NONE)
 	private Boolean error;
 	private String message;
 	private String additionalInfo;
@@ -30,9 +26,5 @@ public class JokeResponse {
 	
 	private String addDash(String sentence) {
 		return "- " + sentence;
-	}
-	
-	public Boolean hasError() {
-		return error;
 	}
 }

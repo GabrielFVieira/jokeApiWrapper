@@ -31,7 +31,7 @@ public class JokeApiService {
 											.bodyToMono(Map.class)
 											.block();
 			
-			return (Boolean) responseBody.get("error");
+			return !((Boolean) responseBody.get("error"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -55,7 +55,7 @@ public class JokeApiService {
 					.bodyToMono(JokeResponse.class)
 					.block();
 
-			if(response.hasError()) {
+			if(response.getError()) {
 				throw new JokeNotFoundException(response.getMessage(), response.getAdditionalInfo());
 			}
 			
