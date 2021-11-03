@@ -3,19 +3,19 @@ A wrapper application for the JokeApi.
 Learn more about the [JokeAPI](https://jokeapi.dev/)
 
 ## To run the application:
-- Install docker, if it's not already installed
+- Install docker, if its not already installed
 - Download the project
 - Inside the project folder open the command prompt
 - Run "mvn clean install" to generate the .jar file
 - Run "docker-compose up" to build the docker image of the application and download the mysql:5.7 image used to provide the needed database
 
 After that a docker container should start, inside it there must be two services:
-- A instance of mysql with a single database called 'jokeapi' running at the port 3306
-- A instance of the jokeApiWrapper running at the port 8088
+- An instance of mysql with a single database called 'jokeapi' running at the port 3306
+- An instance of the jokeApiWrapper running at the port 8088
 
 ## To test the application:
   After the docker container start, open the following URL in your browser: "http://localhost:8088/". \
-  It should redirect you to the Swagger UI page that contains all the endpoints of the api and the description of the possible parameters for each one of them. \
+  It should redirect you to the Swagger UI page that has all the endpoints of the api and the description of the possible parameters for each one of them. \
   From that page is possible to test all the endpoints, but if you want to test it from Insomnia, Postman or any other tool, please read the following section.
 
 ## Endpoints:
@@ -24,7 +24,7 @@ Endpoint used to get a new joke from the JokeAPI
 #### Query Parameters:
   - type -> OPTIONAL. Used to filter the type of joke, the possible values are: 'single', 'twopart'
   - categories -> OPTIONAL. Used to filter the category of the joke, could a single value or a array of strings
-  - lang -> OPTIONAL. Define the language of the joke that will be returned. The default value is 'en'(english)
+  - lang -> OPTIONAL. Defines the language of the joke. The default value is 'en'(english)
 
 #### Return:
   Json object with the following format:
@@ -43,7 +43,7 @@ Endpoint used to get the top rated jokes from a category
 
 #### Query Parameters:
   - amount -> OPTIONAL. Used to define how many jokes will be returned. Default: 5
-  - lang -> OPTIONAL. Define the language of the joke that will be returned. The default value is 'en'(english)
+  - lang -> OPTIONAL. Defines the language of the joke. The default value is 'en'(english)
 
 #### Return:
   Json object with the following format:
@@ -63,7 +63,7 @@ Endpoint used to fetch a specific seen joke by it's id
   - id -> The desired joke id
 
 #### Query Parameters:
-  - lang -> OPTIONAL. Define the language of the joke that will be returned. The default value is 'en'(english)
+  - lang -> OPTIONAL. Defines the language of the joke. The default value is 'en'(english)
 
 #### Return:
   Json object with the following format:
@@ -81,7 +81,7 @@ Endpoint used get all rates of a seen joke
   - id -> The desired joke id
 
 #### Query Parameters:
-  - lang -> OPTIONAL. Define the language of the joke that will be returned. The default value is 'en'(english)
+  - lang -> OPTIONAL. Defines the language of the joke. The default value is 'en'(english)
 
 #### Return:
   Json object with the following format:
@@ -103,13 +103,13 @@ Endpoint used rate a seen joke
 #### Json Body:
   - rating -> Your rating to the joke
   - comment -> OPTIONAL. Some commentary about the joke
-  - lang -> OPTIONAL. Define the language of the joke that will be returned. The default value is 'en'(english)
+  - lang -> OPTIONAL. Defines the language of the joke. The default value is 'en'(english)
 
   Example body:
   ```javascript
   {
     "rating": 4,
-    "comment": "The best joke i have seen in my hole life"
+    "comment": "The best joke I have seen in my whole life"
   }
   ```  
 
@@ -121,7 +121,7 @@ Return a summary with the top 5 jokes per category and a list with the unrated s
 The unseen jokes might me paginated, based on the amount of unrated jokes seen.
 
 #### Query Parameters:
-  - lang -> OPTIONAL. Define the language of the joke that will be returned. The default value is 'en'(english)
+  - lang -> OPTIONAL. Defines the language of the joke. The default value is 'en'(english)
   - page -> OPTIONAL. Used to navigate throw the pages of the unrated seen jokes
   - size -> OPTIONAL. Defines the max size of the unrated jokes seen list. Default: 10, Max: 30
 
@@ -129,7 +129,7 @@ The unseen jokes might me paginated, based on the amount of unrated jokes seen.
 Get only the unrated jokes seen portion of the summary
 
 #### Query Parameters:
-  - lang -> OPTIONAL. Define the language of the joke that will be returned. The default value is 'en'(english)
+  - lang -> OPTIONAL. Defines the language of the joke. The default value is 'en'(english)
   - page -> OPTIONAL. Used to navigate throw the pages
   - size -> OPTIONAL. Defines the max size of the joke list. Default: 10, Max: 30
   
